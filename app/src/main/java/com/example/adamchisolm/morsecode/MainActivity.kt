@@ -1,12 +1,18 @@
 package com.example.adamchisolm.morsecode
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +24,15 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
+        }
+
+        // For Scrolling
+        mTextView.movementMethod = ScrollingMovementMethod();
+
+        // Wire up button
+        testButton.setOnClickListener { view ->
+            appendTextAndScroll(inputText.text.toString());
+            hideKeyboard();
         }
     }
 
@@ -35,5 +50,26 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun appendTextAndScroll(text: String) {
+        if (mTextView != null) {
+            mTextView.append(text + "\n")
+            val layout = mTextView.getLayout()
+            if (layout != null) {
+                val scrollDelta = (layout!!.getLineBottom(mTextView.getLineCount() - 1) - mTextView.getScrollY() - mTextView.getHeight())
+                if (scrollDelta > 0)
+                    mTextView.scrollBy(0, scrollDelta)
+            }
+        }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(if(currentFocus == null) View(this) else currentFocus)
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
