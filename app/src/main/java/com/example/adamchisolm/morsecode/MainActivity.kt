@@ -43,10 +43,17 @@ class MainActivity : AppCompatActivity() {
         val morseJSON = loadMorseJSON()
         makeMorseDicts(morseJSON)
 
-        // Show code button
+        // Button to show codes
         codeButton.setOnClickListener { view ->
             showCodes()
             hideKeyboard()
+        }
+
+        // Translate button
+        translateButton.setOnClickListener { view ->
+            var message = inputText.text.toString()
+            message = message.toLowerCase()
+            translateStringToMorse(message)
         }
     }
 
@@ -111,5 +118,22 @@ class MainActivity : AppCompatActivity() {
         for (k in letToCodeDict.keys.sorted()) {
             appendTextAndScroll("$k: ${letToCodeDict[k]}")
         }
+    }
+
+    fun translateStringToMorse(message : String) {
+        var morseMessage = ""
+        for (letter in message) {
+            if (letter == ' ') {
+                morseMessage += " / "
+            }
+            else if (letter.toString() in letToCodeDict) {
+                morseMessage += letToCodeDict.get(letter.toString())
+            }
+            else {
+                morseMessage += "?"
+            }
+        }
+        appendTextAndScroll(morseMessage)
+        hideKeyboard()
     }
 }
