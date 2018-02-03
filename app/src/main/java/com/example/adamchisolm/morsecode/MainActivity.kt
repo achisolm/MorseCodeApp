@@ -52,8 +52,13 @@ class MainActivity : AppCompatActivity() {
         // Translate button
         translateButton.setOnClickListener { view ->
             var message = inputText.text.toString()
-            message = message.toLowerCase()
-            translateStringToMorse(message)
+            if (isMorseCode(message)) {
+                translateMorseToString(message)
+            }
+            else {
+                message = message.toLowerCase()
+                translateStringToMorse(message)
+            }
         }
     }
 
@@ -135,5 +140,35 @@ class MainActivity : AppCompatActivity() {
         }
         appendTextAndScroll(morseMessage)
         hideKeyboard()
+    }
+
+    fun translateMorseToString(message : String) {
+        var morse = message.split(' ')
+        var translatedMessage = ""
+
+        for (c in morse) {
+            if (c == "/") {
+                translatedMessage += " "
+            }
+            else if (c in codeToLetDict) {
+                translatedMessage += codeToLetDict.get(c)
+            }
+            else {
+                translatedMessage += "?"
+            }
+        }
+
+        appendTextAndScroll(translatedMessage)
+        hideKeyboard()
+    }
+
+    fun isMorseCode(message : String) : Boolean {
+        for (c in message) {
+            if ( c != '.' && c != '-' && c != ' ') {
+                return false
+            }
+        }
+
+        return true
     }
 }
