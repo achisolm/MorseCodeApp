@@ -2,10 +2,13 @@ package com.example.adamchisolm.morsecode
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.os.Bundle
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.method.ScrollingMovementMethod
@@ -28,6 +31,8 @@ val SAMPLE_RATE = 44100
 
 class MainActivity : AppCompatActivity() {
 
+    var prefs: SharedPreferences? = null
+
     var letToCodeDict: HashMap<String, String> = HashMap()
     var codeToLetDict: HashMap<String, String> = HashMap()
 
@@ -40,6 +45,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        prefs = getDefaultSharedPreferences(this.applicationContext)
+        val morsePitch = prefs!!.getString("morse_pitch", "550").toInt()
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
@@ -99,7 +108,12 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
