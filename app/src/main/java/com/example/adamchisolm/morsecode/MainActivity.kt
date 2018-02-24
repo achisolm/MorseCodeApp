@@ -40,14 +40,19 @@ class MainActivity : AppCompatActivity() {
     val dashLength:Int = dotLength * 3
 
     // Pregenerate the sine wave sound buffers for the dot and th edash sounds
-    val dotSoundBuffer:ShortArray = genSineWaveSoundBuffer(550.0, dotLength)
-    val dashSoundBuffer:ShortArray = genSineWaveSoundBuffer(550.0, dashLength)
+    //val dotSoundBuffer:ShortArray = genSineWaveSoundBuffer(550.0, dotLength)
+    //val dashSoundBuffer:ShortArray = genSineWaveSoundBuffer(550.0, dashLength)
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        prefs = getDefaultSharedPreferences(this.applicationContext)
-        val morsePitch = prefs!!.getString("morse_pitch", "550").toInt()
+        //prefs = getDefaultSharedPreferences(this.applicationContext)
+        //val morsePitch = prefs!!.getString("morse_pitch", "550").toDouble()
+        // Pregenerate the sine wave sound buffers for the dot and th edash sounds
+        //val dotSoundBuffer:ShortArray = genSineWaveSoundBuffer(morsePitch, dotLength)
+        //val dashSoundBuffer:ShortArray = genSineWaveSoundBuffer(morsePitch, dashLength)
 
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -245,12 +250,22 @@ class MainActivity : AppCompatActivity() {
 
     // Play dash sound and pause and then do onDone
     fun playDash(onDone : () -> Unit = { /*noop*/ }) {
+        prefs = getDefaultSharedPreferences(this.applicationContext)
+        val morsePitch = prefs!!.getString("morse_pitch", "550").toDouble()
+        // Generate the sine wave sound buffer for the dash sounds
+        val dashSoundBuffer:ShortArray = genSineWaveSoundBuffer(morsePitch, dashLength)
+
         Log.d("DEBUG", "playDash")
         playSoundBuffer(dashSoundBuffer, { -> pause(dotLength, onDone)})
     }
 
     // Play dot sound and pause and then do onDone
     fun playDot(onDone : () -> Unit = { /*noop*/ }) {
+        prefs = getDefaultSharedPreferences(this.applicationContext)
+        val morsePitch = prefs!!.getString("morse_pitch", "550").toDouble()
+        // Generate the sine wave sound buffer for the dash sounds
+        val dotSoundBuffer:ShortArray = genSineWaveSoundBuffer(morsePitch, dotLength)
+
         Log.d("Debug", "playDot")
         playSoundBuffer(dotSoundBuffer, { -> pause(dotLength, onDone)})
     }
