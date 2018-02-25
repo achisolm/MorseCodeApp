@@ -17,9 +17,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.ajts.unifiedsmslibrary.Callback.SMSCallback
+import com.ajts.unifiedsmslibrary.SMS
+import com.ajts.unifiedsmslibrary.Services.Twilio
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import okhttp3.Response
 import org.json.JSONObject
 import java.lang.Math.round
 import java.util.*
@@ -331,5 +335,43 @@ class MainActivity : AppCompatActivity() {
         })
         mAudioTrack.play()
         mAudioTrack.write(nBuffer, 0, minBufferSize)
+    }
+
+    fun doTwilioSend(message: String, toPhoneNum: String){
+        // IF YOU HAVE A PUBLIC GIT, DO NOT, DO NOT, PUT YOUR TWILIO SID/TOKENs HERE
+        // AND DO NOT CHECK IT INTO GIT!!!
+        // Once you check it into a PUBLIC git, it is there for ever and will be stolen.
+        // Move them to a JSON file that is in the .gitignore
+        // Or make them a user setting, that the user would enter
+        // In a real app, move the twilio  parts to a server, so that it cannot be stolen.
+        //
+        val twilio_account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX5b"
+        val twilio_auth_token = "7bXXXXXXXXXXXXXXXXXXXXXXXXXXXXXe"
+        val fromTwilioNum = "+1731XXXXXX3"
+
+        val senderName    = fromTwilioNum  // ??
+
+        val sms = SMS();
+        val twilio = Twilio(twilio_account_sid, twilio_auth_token)
+
+        // This code was converted from Java to Kotlin
+        //  and then it had to have its parameter types changed before it would work
+
+        sms.sendSMS(twilio, senderName, toPhoneNum, message, object : SMSCallback {
+            override fun onResponse(call: okhttp3.Call?, response: Response?) {
+                Log.v("twilio", response.toString())
+                showSnack(response.toString())
+            }
+            override fun onFailure(call: okhttp3.Call?, e: java.lang.Exception?) {
+                Log.v("twilio", e.toString())
+                showSnack(e.toString())
+            }
+        })
+    }
+
+    // helper function to show a quick notice
+    fun showSnack(s:String) {
+        Snackbar.make(this.findViewById(android.R.id.content), s, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
     }
 }
