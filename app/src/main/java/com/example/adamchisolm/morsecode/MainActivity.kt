@@ -345,9 +345,14 @@ class MainActivity : AppCompatActivity() {
         // Or make them a user setting, that the user would enter
         // In a real app, move the twilio  parts to a server, so that it cannot be stolen.
         //
-        val twilio_account_sid = "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX5b"
-        val twilio_auth_token = "7bXXXXXXXXXXXXXXXXXXXXXXXXXXXXXe"
-        val fromTwilioNum = "+1731XXXXXX3"
+        prefs = getDefaultSharedPreferences(this.applicationContext)
+        val sid = prefs!!.getString("morse_pitch", "550")
+
+        val twilio_account_sid = prefs!!.getString("twilio_sid", "sid")
+        val twilio_auth_token = prefs!!.getString("twilio_token", "token")
+        val fromTwilioNum = prefs!!.getString("twilio_num", "num")
+
+        Log.d("log", twilio_account_sid)
 
         val senderName    = fromTwilioNum  // ??
 
